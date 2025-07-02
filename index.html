@@ -1,116 +1,112 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <title>SoundPainter - 音乐绘画艺术</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: #000;
-      font-family: 'Noto Sans SC', sans-serif;
-    }
-    .ui {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      color: white;
-      z-index: 10;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .ui label {
-      display: block;
-      margin-top: 10px;
-      margin-bottom: 4px;
-      font-weight: bold;
-    }
-    .ui select, .ui input[type="file"], .ui button {
-      width: 100%;
-      padding: 6px 10px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255,255,255,0.2);
-      color: white;
-      outline: none;
-      margin-bottom: 6px;
-      transition: all 0.3s;
-    }
-    .ui select:hover, .ui input[type="file"]:hover, .ui button:hover {
-      background: rgba(255,255,255,0.35);
-      cursor: pointer;
-    }
-    .ui button {
-      background: linear-gradient(135deg, #6a5acd, #00bcd4);
-      font-weight: bold;
-    }
-    .ui button:hover {
-      background: linear-gradient(135deg, #7b68ee, #00d6e2);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>SoundPainter 可视音乐</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+<style>
+body { margin: 0; overflow: hidden; background-color: black; }
+.controls {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  padding: 15px;
+  border-radius: 15px;
+  color: white;
+  z-index: 10;
+  font-family: "Arial", sans-serif;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+}
+.controls select, .controls input, .controls button {
+  margin: 5px 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+.controls label {
+  display: block;
+  margin-top: 5px;
+  font-weight: bold;
+}
+.controls button:hover {
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+}
+</style>
 </head>
 <body>
 
-<div class="ui">
-  <label>🎵 上传音乐：</label>
-  <input type="file" id="musicUpload" accept="audio/*">
+<div class="controls">
+  <label>🎶 选择内置音乐</label>
+  <select id="music-select">
+    <option value="none">无</option>
+    <option value="bach.mp3">巴赫 - 哥德堡变奏曲</option>
+    <option value="beethoven.mp3">贝多芬 - 交响曲</option>
+    <option value="chopin.mp3">肖邦 - 夜曲</option>
+  </select>
 
-  <label>🎨 模式选择：</label>
-  <select id="modeSelect">
-    <option value="abstract">抽象动态图形</option>
+  <label>📤 上传音乐</label>
+  <input type="file" id="upload" accept="audio/*">
+
+  <label>🎨 绘画模式</label>
+  <select id="mode-select">
+    <option value="abstract">抽象画</option>
     <option value="realistic">具象绘画</option>
   </select>
 
-  <label>🎨 色彩风格：</label>
-  <select id="colorStyle">
-    <option value="original">彩色</option>
-    <option value="warm">暖色调</option>
+  <label>🖼️ 具象绘画风格</label>
+  <select id="image-select">
+    <option value="0">巴洛克</option>
+    <option value="1">古典</option>
+    <option value="2">浪漫</option>
+    <option value="3">印象派</option>
+  </select>
+
+  <label>🌈 色彩风格</label>
+  <select id="color-select">
+    <option value="default">默认</option>
     <option value="cool">冷色调</option>
+    <option value="warm">暖色调</option>
     <option value="bw">黑白</option>
+    <option value="colorful">多彩</option>
   </select>
 
-  <label>🖌️ 笔触风格：</label>
-  <select id="brushStyle">
-    <option value="square">方形</option>
-    <option value="circle">圆形</option>
-    <option value="oil">油画刷</option>
-    <option value="splatter">泼墨</option>
+  <label>🖌️ 笔触风格</label>
+  <select id="brush-select">
+    <option value="oil">油画</option>
+    <option value="pixel">像素</option>
+    <option value="dot">点阵</option>
+    <option value="watercolor">水彩</option>
+    <option value="random">随机</option>
   </select>
 
-  <label>🖼️ 背景油画：</label>
-  <select id="bgSelect">
-    <option value="1">巴洛克</option>
-    <option value="2">古典主义</option>
-    <option value="3">浪漫主义</option>
-    <option value="4">印象派</option>
-  </select>
-
-  <button id="playButton">▶️ 播放/暂停</button>
+  <br>
+  <button id="play-btn">▶️ 播放</button>
+  <button id="pause-btn">⏸️ 暂停</button>
 </div>
 
 <script>
-let song, fft, amp;
-let playing = false;
-let mode = "abstract";
-let colorStyle = "original";
-let brushStyle = "square";
-let bgImages = [];
-let bgIndex = 0;
+let song;
+let fft;
+let amp;
+let imgList = [];
+let spectrum = [];
 
-let imgPoints = [];
-let revealedPoints = [];
+let mode = 'abstract';
+let colorMode = 'default';
+let brushMode = 'oil';
+let imageIndex = 0;
 
 function preload() {
-  bgImages[0] = loadImage('1.jpg');
-  bgImages[1] = loadImage('2.jpg');
-  bgImages[2] = loadImage('3.jpg');
-  bgImages[3] = loadImage('4.avif');
+  imgList[0] = loadImage('baroque.jpg');       // 巴洛克
+  imgList[1] = loadImage('classical.jpg');      // 古典
+  imgList[2] = loadImage('romantic.jpg');       // 浪漫
+  imgList[3] = loadImage('impressionism.jpg');  // 印象派
 }
 
 function setup() {
@@ -118,14 +114,28 @@ function setup() {
   fft = new p5.FFT();
   amp = new p5.Amplitude();
 
-  document.getElementById('musicUpload').addEventListener('change', handleFile);
-  document.getElementById('playButton').addEventListener('click', togglePlay);
-  document.getElementById('modeSelect').addEventListener('change', e => {mode = e.target.value; resetReveal();});
-  document.getElementById('colorStyle').addEventListener('change', e => {colorStyle = e.target.value; resetReveal();});
-  document.getElementById('bgSelect').addEventListener('change', e => {bgIndex = parseInt(e.target.value) - 1; resetReveal();});
-  document.getElementById('brushStyle').addEventListener('change', e => {brushStyle = e.target.value;});
-  
-  prepareImagePoints();
+  document.getElementById('upload').addEventListener('change', handleFile);
+  document.getElementById('music-select').addEventListener('change', (e) => {
+    if (e.target.value === "none") {
+      if (song) song.stop();
+      song = null;
+      return;
+    }
+    loadMusic(e.target.value);
+  });
+
+  document.getElementById('mode-select').addEventListener('change', (e) => mode = e.target.value);
+  document.getElementById('color-select').addEventListener('change', (e) => colorMode = e.target.value);
+  document.getElementById('brush-select').addEventListener('change', (e) => brushMode = e.target.value);
+  document.getElementById('image-select').addEventListener('change', (e) => imageIndex = parseInt(e.target.value));
+
+  document.getElementById('play-btn').addEventListener('click', () => {
+    if (song) song.play();
+  });
+
+  document.getElementById('pause-btn').addEventListener('click', () => {
+    if (song) song.pause();
+  });
 }
 
 function handleFile(event) {
@@ -134,59 +144,30 @@ function handleFile(event) {
     if (song) song.stop();
     song = loadSound(URL.createObjectURL(file), () => {
       song.play();
-      playing = true;
     });
   }
 }
 
-function togglePlay() {
-  if (song) {
-    if (song.isPlaying()) {
-      song.pause();
-      playing = false;
-    } else {
-      song.play();
-      playing = true;
-    }
-  }
+function loadMusic(filename) {
+  if (song) song.stop();
+  song = loadSound(filename, () => {
+    song.play();
+  }, () => {
+    alert("音频加载失败，检查文件是否存在。");
+  });
 }
 
-function prepareImagePoints() {
-  imgPoints = [];
-  revealedPoints = [];
-  const img = bgImages[bgIndex];
-  img.loadPixels();
-  for (let x = 0; x < img.width; x += 4) {
-    for (let y = 0; y < img.height; y += 4) {
-      const index = (x + y * img.width) * 4;
-      const r = img.pixels[index];
-      const g = img.pixels[index + 1];
-      const b = img.pixels[index + 2];
-      const a = img.pixels[index + 3];
-      if (a > 0) {
-        imgPoints.push({x, y, c: [r, g, b, a]});
-      }
-    }
-  }
-  imgPoints = shuffle(imgPoints);
-}
-
-function resetReveal() {
-  prepareImagePoints();
-  revealedPoints = [];
-}
-
-function applyColorStyle(c) {
-  let [r, g, b, a] = c;
-  if (colorStyle === 'warm') {
-    return color(min(r + 60, 255), min(g + 30, 255), b, a);
-  } else if (colorStyle === 'cool') {
-    return color(r, min(g + 30, 255), min(b + 80, 255), a);
-  } else if (colorStyle === 'bw') {
-    let avg = (r + g + b) / 3;
-    return color(avg, avg, avg, a);
-  } else {
-    return color(r, g, b, a);
+function applyColors(r, g, b) {
+  switch(colorMode) {
+    case 'cool': return color(r*0.6, g*0.7, b);
+    case 'warm': return color(r, g*0.7, b*0.6);
+    case 'bw': 
+      let v = (r + g + b)/3;
+      return color(v);
+    case 'colorful':
+      return color(random(255), random(255), random(255));
+    default:
+      return color(r, g, b);
   }
 }
 
@@ -194,67 +175,25 @@ function draw() {
   background(0, 50);
 
   if (song && song.isPlaying()) {
-    let spectrum = fft.analyze();
+    spectrum = fft.analyze();
     let level = amp.getLevel();
 
     if (mode === 'abstract') {
-      drawAbstract(spectrum, level);
+      drawAbstract(level);
     } else if (mode === 'realistic') {
-      drawRealistic(spectrum, level);
+      drawRealistic(level);
     }
   }
 }
 
-function drawRealistic(spectrum, level) {
-  push();
-  translate(width / 2, height / 2);
-  const img = bgImages[bgIndex];
-  const scaleRatio = min(width / img.width, height / img.height);
-  translate(-img.width * scaleRatio / 2, -img.height * scaleRatio / 2);
-
-  let drawCount = int(map(level, 0, 1, 5, 200));
-  for (let i = 0; i < drawCount; i++) {
-    if (imgPoints.length > 0) {
-      let pt = imgPoints.pop();
-      revealedPoints.push(pt);
-    }
-  }
-
-  revealedPoints.forEach(pt => {
-    fill(applyColorStyle(pt.c));
-    noStroke();
-    let size = random(3, 7);
-
-    if (brushStyle === 'square') {
-      rect(pt.x * scaleRatio, pt.y * scaleRatio, size, size);
-    } else if (brushStyle === 'circle') {
-      ellipse(pt.x * scaleRatio, pt.y * scaleRatio, size, size);
-    } else if (brushStyle === 'oil') {
-      push();
-      translate(pt.x * scaleRatio, pt.y * scaleRatio);
-      rotate(random(TWO_PI));
-      rect(0, 0, size * 2, size/2);
-      pop();
-    } else if (brushStyle === 'splatter') {
-      for (let j = 0; j < 3; j++) {
-        let offsetX = random(-size, size);
-        let offsetY = random(-size, size);
-        ellipse(pt.x * scaleRatio + offsetX, pt.y * scaleRatio + offsetY, size / 2);
-      }
-    }
-  });
-  pop();
-}
-
-function drawAbstract(spectrum, level) {
-  noFill();
-
-  let size = map(level, 0, 1, 100, 600);
-  fill(200 + level * 100, 100, 255 - level * 200, 180);
-  ellipse(width / 2, height / 2, size, size);
+function drawAbstract(level) {
+  let size = map(level, 0, 1, 100, 500);
+  noStroke();
+  fill(applyColors(200, 100, 255), 180);
+  ellipse(width / 2, height / 2, size);
 
   translate(width / 2, height / 2);
-  stroke(100, 255, 200);
+  stroke(applyColors(100, 255, 200));
   noFill();
   beginShape();
   for (let i = 0; i < spectrum.length; i += 10) {
@@ -265,13 +204,51 @@ function drawAbstract(spectrum, level) {
     vertex(x, y);
   }
   endShape(CLOSE);
+  resetMatrix();
+}
+
+function drawRealistic(level) {
+  let img = imgList[imageIndex];
+  let step = int(map(level, 0, 0.3, 5, 50));
+
+  for (let i = 0; i < step; i++) {
+    let x = random(width);
+    let y = random(height);
+    let imgX = int(map(x, 0, width, 0, img.width));
+    let imgY = int(map(y, 0, height, 0, img.height));
+    let c = img.get(imgX, imgY);
+    let col = applyColors(c[0], c[1], c[2]);
+
+    noStroke();
+    fill(col, 200);
+
+    switch(brushMode) {
+      case 'oil':
+        ellipse(x, y, random(10, 20));
+        break;
+      case 'pixel':
+        rect(x, y, 10, 10);
+        break;
+      case 'dot':
+        ellipse(x, y, 5);
+        break;
+      case 'watercolor':
+        ellipse(x, y, random(20, 40));
+        break;
+      case 'random':
+        if (random(1) > 0.5) {
+          ellipse(x, y, random(10, 30));
+        } else {
+          rect(x, y, random(10, 30), random(10, 30));
+        }
+        break;
+    }
+  }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  resetReveal();
 }
 </script>
-
 </body>
 </html>
